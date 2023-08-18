@@ -3,16 +3,16 @@ import time
 
 import numpy as np
 
-import config as cfg
-from controller import XboxController
-from keyboard import Origin
-from path import PathProcessor, plot_all
-from word import WordConstructor
+from .config import Origin
+from .controller import XboxController
+from .path import PathProcessor
+from .plot import display
+from .word import WordConstructor
 
-from nltk import ConditionalFreqDist
-from nltk.util import bigrams
-from collections import Counter
-from bigram import select_word, word_set
+# from nltk import ConditionalFreqDist
+# from nltk.util import bigrams
+# from collections import Counter
+# from .bigram import select_word, word_set
 
 def words_from_path(path, plot=False):
     # # Remove points where both sticks are near the origin
@@ -31,7 +31,7 @@ def words_from_path(path, plot=False):
     # right_processor.filter_peaks()
 
     if plot:
-        plot_all(left_processor, right_processor)
+        display(left_processor, right_processor)
 
     word_constructor = WordConstructor(left_processor, right_processor)
     word_scores = word_constructor.construct_words()

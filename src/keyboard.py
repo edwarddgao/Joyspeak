@@ -1,12 +1,10 @@
-from enum import Enum
-
 import numpy as np
 import pandas as pd
-import config as cfg
+from .config import DEAD_ZONE
 
 
 class Keyboard:
-    # Define the keyboard layout and coordinates
+    ''' Static class representing coordinate system of keyboard layout '''
     layout = [
         {'keys': ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'], 'y': 2, 'start_x': 0},
         {'keys': ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'], 'y': 1, 'start_x': 0.5},
@@ -22,10 +20,10 @@ class Keyboard:
     pos = pd.DataFrame(data, columns=['Key', 'x', 'y'])
 
     @staticmethod
-    # Return angular difference between vec at origin and each key
     def angle_to_keys(vec, origin):
+        ''' Return angular difference between vec at origin and each key '''
         # Dead zone
-        if np.linalg.norm(vec) < cfg.dead_zone:
+        if np.linalg.norm(vec) < DEAD_ZONE:
             # Return origin key (and empty string later) with probability 0.5
             return pd.Series({origin: np.pi/2})
         
@@ -69,8 +67,3 @@ class Keyboard:
         atok[''] = 0.5 if origin in atok.index and atok[origin] > 0 else 0
         
         return atok
-
-
-class Origin(Enum):
-    LEFT = 'd'
-    RIGHT = 'j'

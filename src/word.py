@@ -2,9 +2,9 @@ import logging
 import math
 from operator import itemgetter
 
-import config as cfg
-from keyboard import Keyboard, Origin
-from trie import Trie
+from .config import BEAM_WIDTH, Origin
+from .keyboard import Keyboard
+from .trie import Trie
 from nltk.corpus import brown
 
 
@@ -58,19 +58,26 @@ class WordConstructor:
                 # Score is kept as log probability
                 new_paths = [
                     {"prefix": prefix + char, "score": score + math.log(prob[char])}
-                    for char in WordConstructor.trie.next(prefix)
+                    for char in WordConstructor.trie.next_chars(prefix)
                     # Handle log(0) and avoid duplicates prefixes
                     if prob[char] > 0 and prefix + char not in prefixes
                 ]
+                new_dup_paths = [
+                    {"prefix": prefix + char + char, "score": score + math.log(prob[char])}
+                    for char in WordConstructor.trie.next_dup_chars(prefix)
+                    # Handle log(0) and avoid duplicates prefixes
+                    if prob[char] > 0 and prefix + char + char not in prefixes
+                ]
                 next_beam.extend(new_paths)
+                next_beam.extend(new_dup_paths)
                 prefixes.update(map(itemgetter("prefix"), new_paths))
                 # Note the case with origin keys, where new prefix added before without penalty
-                if prefix not in prefixes:
-                    # Penalize! Can't sit on short prefix with great score
-                    next_beam.append({"prefix": prefix, "score": score + math.log(cfg.penalize_score)})
+                if prefix and prefix not in prefixes and prob[prefix[-1]] > 0:
+                    # Probability that the key is the same as last
+                    next_beam.append({"prefix": prefix, "score": score + math.log(prob[prefix[-1]])})
                 prefixes.add(prefix)
             # Keep only the top (beam_width) paths
-            beam = sorted(next_beam, key=lambda x: x["score"], reverse=True)[:cfg.beam_width]
+            beam = sorted(next_beam, key=lambda x: x["score"], reverse=True)[:BEAM_WIDTH]
             logging.info(beam[:10])
         # Filter out words
         word_scores = [path for path in beam if WordConstructor.trie.is_word(path["prefix"])]

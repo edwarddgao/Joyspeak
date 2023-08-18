@@ -1,4 +1,7 @@
-from controller import XboxController
+import sys
+sys.path.append('..')
+
+from src.controller import XboxController
 import time
 import numpy as np
 import os
@@ -6,7 +9,7 @@ import os
 controller = XboxController()
 polling_rate = 100
 
-with open('english.txt', "r") as file:
+with open('../data/english.txt', "r") as file:
     words = [line.strip() for line in file]
 
 recorded = [filename for filename in os.listdir('saves') if filename.endswith(".npy")]

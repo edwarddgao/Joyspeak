@@ -1,4 +1,6 @@
 # %% Setup
+import sys
+sys.path.append('..')
 
 import logging
 import os
@@ -6,12 +8,10 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-from word import WordConstructor
-from write import words_from_path
+from src.write import words_from_path
 
 # %% Loop through every path file in the saves directory
-logging.propagate = False
-directory = ".saves"
+directory = "../data/.saves"
 scores = []
 
 for filename in os.listdir(directory):
@@ -45,10 +45,5 @@ plt.show()
 # Calculate the median position
 median = scores[len(scores)//2]["position"]
 print(f"Median position: {median}")
-
-# %% Test specific word file
-logging.basicConfig(level=logging.INFO)
-path = np.load("saves/other.npy")
-print(words_from_path(path, plot=True))
 
 # %%

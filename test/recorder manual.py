@@ -1,4 +1,7 @@
-from controller import XboxController
+import sys
+sys.path.append('..')
+
+from src.controller import XboxController
 import time
 import numpy as np
 import os

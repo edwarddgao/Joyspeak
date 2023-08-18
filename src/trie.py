@@ -4,6 +4,7 @@ class TrieNode:
         self.children = {}
         self.is_end_of_word = False
 
+
 class Trie:
     def __init__(self):
         self.root = TrieNode("")  # Root node has no character
@@ -36,9 +37,9 @@ class Trie:
             else:
                 return False
         return True
-    
-    # get next characters with prefix
-    def next(self, prefix):
+
+    # Get next characters with prefix
+    def next_chars(self, prefix):
         node = self.root
         for char in prefix:
             if char in node.children:
@@ -47,3 +48,16 @@ class Trie:
                 return []
         return list(node.children.keys())
 
+    # Get next duplicate chars with prefix
+    def next_dup_chars(self, prefix):
+        node = self.root
+        for char in prefix:
+            if char in node.children:
+                node = node.children[char]
+            else:
+                return []
+        return [
+            next_char
+            for next_char in node.children
+            if next_char in node.children[next_char].children
+        ]
