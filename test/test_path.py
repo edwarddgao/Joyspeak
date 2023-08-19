@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 
 # %% Test specific word file
 logging.basicConfig(level=logging.INFO)
-path = np.load("../data/.saves/free.npy")
+path = np.load("../data/.saves/get.npy")
 
 words_from_path(path, plot=True)
 

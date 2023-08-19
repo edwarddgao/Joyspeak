@@ -9,10 +9,14 @@ import os
 controller = XboxController()
 polling_rate = 100
 
-with open('../data/english.txt', "r") as file:
+SAVES_DIR = '../data/.saves'
+ENGLISH_TXT = '../data/english.txt'
+
+with open(ENGLISH_TXT, "r") as file:
     words = [line.strip() for line in file]
 
-recorded = [filename for filename in os.listdir('saves') if filename.endswith(".npy")]
+recorded = [os.path.splitext(filename)[0] for filename in os.listdir(SAVES_DIR) if filename.endswith(".npy")]
+print(recorded)
 
 print('Press Right Bumper to start recording path, then again to stop recording path')
 for target_word in words:
@@ -47,7 +51,7 @@ for target_word in words:
         time.sleep(0.1)
     if controller.A:
         # save path to file
-        np.save(f'saves/{target_word}', path)
+        np.save(f'{SAVES_DIR}/{target_word}', path)
         print(f'Saved "{target_word}" to file')
     else:
         print('Path discarded')

@@ -5,13 +5,12 @@ from operator import itemgetter
 from .config import BEAM_WIDTH, Origin
 from .keyboard import Keyboard
 from .trie import Trie
-from nltk.corpus import brown
-
 
 class WordConstructor:
     trie = Trie()
-    raw_words = brown.words()
-    words = [word.lower() for word in raw_words if word.isalpha()]
+    ENGLISH_TXT = '../data/english.txt'
+    with open(ENGLISH_TXT, "r") as file:
+        words = [line.strip() for line in file]
     for word in set(words):
         trie.insert(word)
 

@@ -33,7 +33,6 @@ for filename in os.listdir(directory):
 
 # %% Plot position of words from saves
 scores.sort(key=lambda x: x["relative"])
-print(scores)
 
 # Calculate percentiles and plot histogram
 plt.hist([s['relative'] for s in scores], bins=50, edgecolor="black")
@@ -45,5 +44,9 @@ plt.show()
 # Calculate the median position
 median = scores[len(scores)//2]["position"]
 print(f"Median position: {median}")
+
+for s in scores:
+    if s['position'] == -1:
+        print(s)
 
 # %%

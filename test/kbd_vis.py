@@ -1,23 +1,26 @@
+import sys
+sys.path.append('..')
+
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.lines import Line2D
 import matplotlib.cm as cm
-from controller import XboxController
-from keyboard import Keyboard
-import numpy as np
-from keyboard import Origin
+from src.controller import XboxController
+from src.keyboard import Keyboard
+from src.config import Origin, RADIUS_LIMIT
 
 controller = XboxController()
 df = Keyboard.pos
-interval = 10
+INTERVAL = 10
 colormap = cm.get_cmap('viridis')
 fig, ax = plt.subplots(figsize=(10, 5))
 
 # Set up the plot
-ax.set_xlim(-1, 11)
-ax.set_ylim(-3, 3)
+ax.set_xlim(-1, 10)
+ax.set_ylim(-1, 4)
 ax.set_xlabel('x')
 ax.set_ylabel('y')
+ax.set_aspect('equal', adjustable='box')
 ax.grid(True)
 
 # Create initial plot with text and point elements
@@ -28,6 +31,18 @@ for row in Keyboard.layout:
         y = row['y']
         text = ax.text(x, y, key, fontsize=18, ha='center')
         text_elements.append(text)
+
+# Get origin coordinates
+origin_coords_left = df[df['Key'] == Origin.LEFT.value][['x', 'y']].values[0]
+origin_coords_right = df[df['Key'] == Origin.RIGHT.value][['x', 'y']].values[0]
+
+# Create circles at the origin coordinates with radius 2.75
+circle_left = plt.Circle(origin_coords_left, RADIUS_LIMIT, color='r', fill=False)
+circle_right = plt.Circle(origin_coords_right, RADIUS_LIMIT, color='r', fill=False)
+
+# Add circles to the plot
+ax.add_artist(circle_left)
+ax.add_artist(circle_right)
 
 # Create line objects for the vectors
 line1 = Line2D([0], [0], color='b')
@@ -58,7 +73,7 @@ def update(frame):
     return *text_elements, line1, line2
 
 # Create the animation
-ani = animation.FuncAnimation(fig, update, interval=interval, blit=True)
+ani = animation.FuncAnimation(fig, update, interval=INTERVAL, blit=True)
 
 # Display the plot
 plt.show()
